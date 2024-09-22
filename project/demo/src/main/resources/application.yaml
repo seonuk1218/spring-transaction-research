@@ -1,0 +1,31 @@
+spring:
+#  jta:
+#    atomikos:
+#      datasource:
+#        primary:
+#          unique-resource-name: primary
+#          xa-data-source-class-name: org.h2.jdbcx.JdbcDataSource
+#          xa-properties:
+#            URL: jdbc:h2:mem:primarydb
+#            user: sa
+#            password:
+#        secondary:
+#          unique-resource-name: secondary
+#          xa-data-source-class-name: org.h2.jdbcx.JdbcDataSource
+#          xa-properties:
+#            URL: jdbc:h2:mem:secondarydb
+#            user: sa
+#            password:
+  datasource:
+    primary:
+      jdbcUrl: jdbc:h2:mem:primarydb
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:
+    secondary:
+      jdbcUrl: jdbc:h2:mem:secondarydb
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:
+  application:
+    name: demo
