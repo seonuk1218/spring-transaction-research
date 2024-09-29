@@ -1,4 +1,4 @@
-package cheatsheet.demo.config;
+package cheatsheet.demo.primary.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,6 +7,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,25 +22,26 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    basePackages = "cheatsheet.demo.secondary.repository",
-    entityManagerFactoryRef = "secondaryEntityManagerFactory",
-    transactionManagerRef = "secondaryTransactionManager"
+    basePackages = "cheatsheet.demo.primary.repository",
+    entityManagerFactoryRef = "primaryEntityManagerFactory",
+    transactionManagerRef = "primaryTransactionManager"
 )
-public class SecondaryDataSourceConfig {
+public class PrimaryDataSourceConfig {
 
-    @Bean(name = "secondaryDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.secondary")
-    public DataSource secondaryDataSource() {
+    @Bean(name = "primaryDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.primary")
+    public DataSource primaryDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "secondaryEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean secondaryEntityManagerFactory(
-            DataSource secondaryDataSource) {
+    @Bean(name = "primaryEntityManagerFactory")
+    @Primary // 기본 EntityManagerFactory로 지정
+    public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
+            DataSource primaryDataSource) {
 
         LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
-        bean.setDataSource(secondaryDataSource);
-        bean.setPackagesToScan("cheatsheet.demo.secondary.entity");
+        bean.setDataSource(primaryDataSource);
+        bean.setPackagesToScan("cheatsheet.demo.primary.entity");
         bean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Map<String, Object> properties = new HashMap<>();
@@ -50,9 +52,9 @@ public class SecondaryDataSourceConfig {
         return bean;
     }
 
-    @Bean(name = "secondaryTransactionManager")
-    public PlatformTransactionManager secondaryTransactionManager(
-            @Qualifier("secondaryEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean(name = "primaryTransactionManager")
+    public PlatformTransactionManager primaryTransactionManager(
+            @Qualifier("primaryEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }

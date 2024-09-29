@@ -34,7 +34,7 @@ public class TransactionalService {
     }
 
     // 두 트랜잭션을 함께 사용하는 예제 (분산 트랜잭션 설정 필요)
-    @Transactional
+    @Transactional("분산_트랜잭션_Manager")
     public void combinedServiceMethod() {
         primaryServiceMethod();
         secondaryServiceMethod();
